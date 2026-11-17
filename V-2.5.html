@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeguhDesk</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============ TOKENS ============ */
+:root{
+    --rail:#0F1B2D;
+    --rail-line:#223149;
+    --rail-text:#E6EBF2;
+    --rail-text-soft:#8D9BB0;
+
+    --paper:#F4F6F9;
+    --surface:#FFFFFF;
+    --line:#E2E7EE;
+    --text:#14202F;
+    --text-soft:#5E6B7E;
+
+    --accent:#1F5FD1;
+    --accent-deep:#1749A6;
+    --accent-ink:#FFFFFF;
+    --teal:#1E8A6E;
+    --amber:#B7791F;
+    --amber-deep:#B7791F;
+    --coral:#C8402F;
+    --blue:#1F5FD1;
+    --violet:#7C4DCC;
+
+    --font-display:'Inter',Arial,sans-serif;
+    --font-body:'Inter',Arial,sans-serif;
+    --radius:10px;
+    --radius-sm:6px;
+    --shadow:0 1px 2px rgba(15,27,45,.06);
+}
+body.dark{
+    --paper:#0C121C;
+    --surface:#141C28;
+    --line:#243044;
+    --text:#E6EBF2;
+    --text-soft:#98A5B8;
+    --accent:#5B93F0;
+    --accent-deep:#7BA9F5;
+    --accent-ink:#0C121C;
+    --teal:#3DB594;
+    --amber:#E0A24A;
+    --amber-deep:#E0A24A;
+    --coral:#EE6A58;
+    --blue:#5B93F0;
+    --violet:#A98BF0;
+    --shadow:none;
+}
+
+*{box-sizing:border-box;}
+body{
+    font-family:var(--font-body);
+    font-size:14px;
+    line-height:1.5;
+    background:var(--paper);
+    color:var(--text);
+    margin:0;
+    -webkit-font-smoothing:antialiased;
+    font-feature-settings:"tnum" 1,"cv11" 1;
+    transition:.2s background,.2s color;
+}
+h1,h2,h3{font-family:var(--font-display);margin:0;font-weight:600;letter-spacing:-.015em;}
+h1{font-size:24px;}
+h2{font-size:18px;}
+.eyebrow{display:none;}
+
+label{display:block;font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px;}
+input,select,textarea{
+    width:100%;font-family:var(--font-body);font-size:14px;
+    padding:10px 12px;margin-bottom:16px;
+    border:1px solid var(--line);border-radius:var(--radius-sm);
+    background:var(--surface);color:var(--text);
+    transition:border-color .15s,box-shadow .15s;
+}
+input::placeholder,textarea::placeholder{color:#9AA5B5;}
+input:hover,select:hover,textarea:hover{border-color:#C5CDD9;}
+body.dark input:hover,body.dark select:hover,body.dark textarea:hover{border-color:#3A4962;}
+input:focus,select:focus,textarea:focus{
+    outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent);
+}
+textarea{min-height:88px;resize:vertical;}
+
+/* ============ BUTTONS ============ */
+button{
+    font-family:var(--font-body);font-weight:500;font-size:14px;
+    border:1px solid transparent;padding:9px 16px;border-radius:var(--radius-sm);
+    cursor:pointer;transition:background .15s,border-color .15s,color .15s;
+}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.btn-primary{background:var(--accent);color:var(--accent-ink);}
+.btn-primary:hover{background:var(--accent-deep);}
+.btn-ghost{background:var(--surface);color:var(--text);border-color:var(--line);}
+.btn-ghost:hover{background:var(--paper);border-color:#C5CDD9;}
+.btn-danger{background:var(--coral);color:#fff;}
+.btn-danger:hover{background:#A93323;}
+.btn-danger-outline{background:transparent;color:var(--coral);border-color:color-mix(in srgb,var(--coral) 45%,transparent);}
+.btn-danger-outline:hover{background:var(--coral);color:#fff;border-color:var(--coral);}
+.btn-warn{background:var(--surface);color:var(--text);border-color:var(--line);}
+.btn-warn:hover{background:var(--paper);border-color:#C5CDD9;}
+.full{width:100%;}
+
+/* ============ AUTH ============ */
+.auth-shell{display:flex;min-height:100vh;background:var(--surface);}
+.auth-visual{
+    flex:1;background:var(--rail);color:var(--rail-text);
+    display:flex;flex-direction:column;justify-content:center;
+    padding:72px;
+}
+.auth-visual .stub{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:15px;font-weight:600;color:#fff;margin-bottom:40px;
+}
+.auth-visual .stub::before{
+    content:"TD";display:flex;align-items:center;justify-content:center;
+    width:32px;height:32px;border-radius:8px;background:var(--accent);
+    color:#fff;font-size:13px;font-weight:700;
+}
+.auth-visual .stub small{font-size:12px;font-weight:400;color:var(--rail-text-soft);}
+.auth-visual h1{font-size:36px;line-height:1.15;margin-bottom:16px;color:#fff;max-width:420px;}
+.auth-visual p{color:var(--rail-text-soft);font-size:15px;max-width:400px;line-height:1.65;margin:0;}
+.auth-visual .ticket-row{display:flex;flex-direction:column;gap:12px;margin-top:40px;}
+.mini-stub{
+    display:flex;align-items:center;gap:10px;font-size:14px;color:var(--rail-text);
+    padding:0;border:0;
+}
+.mini-stub::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.mini-stub b{display:none;}
+.auth-panel{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;background:var(--surface);}
+.auth-card{width:100%;max-width:380px;}
+.auth-card h1{font-size:26px;margin-bottom:6px;}
+.auth-sub{color:var(--text-soft);font-size:14px;margin:0 0 28px 0;}
+.auth-card br{display:none;}
+.auth-card .btn-primary{margin-top:4px;padding:11px 16px;}
+.auth-card .btn-ghost{margin-top:10px;padding:11px 16px;}
+
+/* ============ APP SHELL ============ */
+#app{display:none;}
+.app-shell{display:flex;min-height:100vh;}
+.sidebar{
+    width:248px;flex-shrink:0;background:var(--rail);color:var(--rail-text);
+    display:flex;flex-direction:column;padding:20px 12px;
+    position:sticky;top:0;height:100vh;
+}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;margin-bottom:12px;border-bottom:1px solid var(--rail-line);}
+.brand-mark{
+    font-weight:700;font-size:13px;background:var(--accent);color:#fff;
+    width:32px;height:32px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+}
+.brand-text{font-size:16px;font-weight:600;color:#fff;}
+.brand-text b{font-weight:600;color:#7FA8F2;}
+
+nav.side-nav{display:flex;flex-direction:column;gap:2px;flex:1;overflow-y:auto;}
+.nav-item{
+    display:flex;align-items:center;gap:12px;background:transparent;
+    color:var(--rail-text-soft);text-align:left;font-weight:500;
+    padding:9px 12px;border-radius:var(--radius-sm);border:0;
+}
+.nav-item svg{width:18px;height:18px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:var(--rail-text);}
+.nav-item.active{background:rgba(255,255,255,.10);color:#fff;}
+.nav-item.active svg{color:#7FA8F2;}
+
+.sidebar-foot{display:flex;flex-direction:column;gap:8px;padding-top:16px;border-top:1px solid var(--rail-line);}
+.theme-toggle{background:transparent!important;color:var(--rail-text-soft);border:1px solid var(--rail-line)!important;}
+.theme-toggle:hover{color:var(--rail-text);border-color:#3A4C68!important;}
+.btn-logout{background:transparent;color:#F08A7B;border:1px solid var(--rail-line);}
+.btn-logout:hover{border-color:#F08A7B;}
+
+.main{flex:1;padding:32px 40px 48px;min-width:0;max-width:1280px;}
+.page-head{margin-bottom:24px;}
+
+.card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;margin-bottom:20px;box-shadow:var(--shadow);overflow-x:auto;
+}
+.card h2{margin-bottom:18px;}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.card-head h2{margin:0;}
+
+/* ============ DASHBOARD ============ */
+.stat-hero{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;margin-bottom:16px;box-shadow:var(--shadow);
+}
+.stat-label{color:var(--text-soft);font-size:13px;font-weight:500;}
+.stat-number{font-size:44px;font-weight:600;letter-spacing:-.02em;line-height:1.1;margin-top:6px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
+.stat-card{
+    display:flex;flex-direction:column;gap:4px;padding:20px 24px;
+    border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);
+    box-shadow:var(--shadow);position:relative;overflow:hidden;color:var(--text);
+}
+.stat-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--stat,var(--line));}
+.stat-icon{display:none;}
+.stat-card b{font-size:13px;font-weight:500;color:var(--text-soft);}
+.stat-card span.count{display:block;font-size:26px;font-weight:600;color:var(--text);}
+
+/* ============ FORM ROW ============ */
+.form-row{display:flex;gap:16px;align-items:flex-start;}
+.form-group{flex:1;}
+.form-group select,.form-group input{margin:0 0 16px 0;}
+
+/* ============ TABLE ============ */
+table{width:100%;border-collapse:collapse;}
+th{
+    text-align:left;font-size:12px;font-weight:600;color:var(--text-soft);
+    padding:10px 14px;background:var(--paper);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);white-space:nowrap;
+}
+th:first-child{border-left:1px solid var(--line);border-top-left-radius:var(--radius-sm);}
+th:last-child{border-right:1px solid var(--line);border-top-right-radius:var(--radius-sm);}
+td{padding:14px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle;}
+tbody tr:hover td{background:color-mix(in srgb,var(--paper) 60%,transparent);}
+tr:last-child td{border-bottom:none;}
+
+.ticket-id{font-size:13px;font-weight:600;color:var(--text-soft);white-space:nowrap;}
+.ticket-text{max-width:280px;white-space:normal;word-wrap:break-word;overflow-wrap:break-word;line-height:1.45;}
+.ticket-title{font-weight:600;display:block;margin-bottom:2px;}
+.ticket-desc{color:var(--text-soft);font-size:13px;display:block;}
+
+.badge,.status{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap;
+    color:var(--tone);background:color-mix(in srgb,var(--tone) 12%,transparent);
+}
+.badge::before,.status::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--tone);}
+.low{--tone:var(--teal);}
+.medium{--tone:var(--amber);}
+.high{--tone:var(--coral);}
+.open{--tone:var(--blue);}
+.progress{--tone:var(--amber);}
+.closed{--tone:var(--teal);}
+
+.row-actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;}
+.row-actions button{padding:6px 12px;font-size:13px;}
+
+.avatar-name{display:flex;align-items:center;gap:10px;}
+.avatar{
+    width:30px;height:30px;border-radius:50%;
+    background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);
+    font-weight:600;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+hr{border:none;border-top:1px solid var(--line);margin:20px 0;}
+
+/* ============ TICKET FILTER POPOVER ============ */
+#ticketListPage .card{overflow:visible;}
+#ticketListPage .table-wrap{overflow-x:auto;}
+.list-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;}
+.list-toolbar input{margin:0;flex:1;min-width:0;}
+.filter-menu{position:relative;flex-shrink:0;}
+.filter-toggle{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;}
+.filter-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.filter-count{display:none;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:600;align-items:center;justify-content:center;}
+.filter-count.show{display:inline-flex;}
+.filter-toggle.active{border-color:var(--accent);}
+.filter-popover{
+    display:none;position:absolute;right:0;top:calc(100% + 8px);z-index:50;width:340px;max-width:calc(100vw - 48px);
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:0 12px 32px rgba(15,27,45,.18);padding:16px;
+}
+.filter-popover.open{display:block;}
+.filter-popover::before{
+    content:"";position:absolute;top:-6px;right:22px;width:10px;height:10px;
+    background:var(--surface);border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg);
+}
+.filter-section{margin-bottom:14px;}
+.filter-section-title{font-size:12px;font-weight:600;color:var(--text-soft);margin:0 0 8px;}
+.filter-range{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.filter-range label{font-size:12px;color:var(--text-soft);font-weight:500;}
+.filter-range input{margin:0;padding:8px 10px;}
+.filter-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px;}
+.filter-actions button{padding:8px 14px;font-size:13px;}
+
+/* ============ CONFIGURATION ============ */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;overflow-x:auto;}
+.tab-btn{
+    background:none;border:none;border-bottom:2px solid transparent;border-radius:0;
+    padding:10px 14px;margin-bottom:-1px;font-size:14px;font-weight:500;color:var(--text-soft);white-space:nowrap;
+}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius-sm);}
+.setting-text b{display:block;font-size:14px;font-weight:600;margin-bottom:2px;}
+.setting-text span{display:block;font-size:13px;color:var(--text-soft);line-height:1.45;}
+.switch{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;margin:0;cursor:pointer;}
+.switch input{position:absolute;opacity:0;width:0;height:0;margin:0;padding:0;}
+.switch .slider{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:background .15s;}
+.switch .slider::before{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.25);}
+.switch input:checked + .slider{background:var(--accent);}
+.switch input:checked + .slider::before{transform:translateX(20px);}
+.switch input:focus-visible + .slider{outline:2px solid var(--accent);outline-offset:2px;}
+.config-status{font-size:13px;color:var(--teal);align-self:center;opacity:0;transition:opacity .2s;}
+.config-status.show{opacity:1;}
+.req-star{color:var(--coral);display:none;}
+.req-star.show{display:inline;}
+
+/* ============ USERS & ROLES ============ */
+.user-chip{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--rail-line);border-radius:var(--radius-sm);}
+.user-chip .avatar{background:var(--accent);color:#fff;}
+.user-chip b{display:block;font-size:13px;color:var(--rail-text);font-weight:600;}
+.user-chip span.role{display:block;font-size:12px;color:var(--rail-text-soft);}
+.perm-group{margin-bottom:16px;}
+.perm-group-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.perm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;}
+label.perm-item{
+    display:flex;align-items:center;gap:10px;margin:0;padding:9px 12px;
+    border:1px solid var(--line);border-radius:var(--radius-sm);
+    font-size:13px;font-weight:400;color:var(--text);cursor:pointer;background:var(--surface);
+}
+label.perm-item:hover{border-color:var(--accent);}
+label.perm-item input{width:auto;margin:0;padding:0;accent-color:var(--accent);}
+.chip{
+    display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0;
+    background:var(--paper);border:1px solid var(--line);color:var(--text-soft);
+}
+.chip.all{background:color-mix(in srgb,var(--accent) 12%,transparent);border-color:transparent;color:var(--accent);font-weight:500;}
+select.inline-select{width:auto;margin:0;padding:6px 8px;font-size:13px;}
+.form-actions{display:flex;gap:8px;margin-top:8px;}
+.no-access{text-align:center;padding:64px 20px;color:var(--text-soft);}
+
+/* ============ PASSWORD TOGGLE ============ */
+.pw-field{position:relative;}
+.pw-field input{padding-right:46px;}
+.pw-toggle{
+    position:absolute;top:0;bottom:16px;right:4px;width:40px;padding:0;
+    display:flex;align-items:center;justify-content:center;
+    background:transparent;color:var(--text-soft);border-radius:var(--radius-sm);border:0;
+}
+.pw-toggle:hover{color:var(--text);background:transparent;}
+.pw-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+.pw-toggle svg{display:block;}
+.pw-toggle .icon-eye-off{display:none;}
+.pw-toggle.is-visible .icon-eye{display:none;}
+.pw-toggle.is-visible .icon-eye-off{display:block;}
+.pw-toggle.is-visible{color:var(--accent);}
+
+/* ============ NOTICE ============ */
+.notice{
+    display:flex;align-items:flex-start;gap:10px;padding:12px 14px;margin-bottom:20px;
+    border:1px solid color-mix(in srgb,var(--coral) 35%,transparent);
+    border-radius:var(--radius-sm);background:color-mix(in srgb,var(--coral) 8%,transparent);
+    color:var(--text);font-size:13px;line-height:1.5;
+}
+.notice.warn{border-color:color-mix(in srgb,var(--accent) 35%,transparent);background:color-mix(in srgb,var(--accent) 8%,transparent);}
+.notice .notice-icon{display:flex;color:var(--coral);margin-top:1px;}
+.notice.warn .notice-icon{color:var(--accent);}
+.notice .notice-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.notice .notice-body{flex:1;}
+.notice .notice-body b{display:block;font-size:13px;margin-bottom:2px;}
+.notice button.notice-link{background:none;border:0;padding:0;margin-top:6px;color:var(--accent);font-size:13px;font-weight:500;text-decoration:underline;}
+.notice.shake{animation:notice-shake .35s;}
+@keyframes notice-shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+@media (prefers-reduced-motion:reduce){.notice.shake{animation:none;}*{transition:none!important;}}
+input.input-error{border-color:var(--coral);box-shadow:0 0 0 3px color-mix(in srgb,var(--coral) 18%,transparent);}
+
+/* ============ MODAL ============ */
+.modal-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(10,16,26,.55);display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal-box{
+    background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:12px;
+    padding:24px;width:100%;max-width:400px;box-shadow:0 24px 48px rgba(0,0,0,.28);
+}
+.modal-box h3{font-size:18px;margin-bottom:8px;}
+.modal-box p{color:var(--text-soft);font-size:14px;margin:0 0 24px 0;line-height:1.55;}
+.modal-box .form-actions{justify-content:flex-end;margin-top:0;}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:900px){
+    .auth-visual{display:none;}
+    .app-shell{flex-direction:column;}
+    .sidebar{width:100%;height:auto;position:relative;flex-direction:row;align-items:center;padding:12px 16px;overflow-x:auto;}
+    .brand{border-bottom:none;padding:0;margin:0 16px 0 0;}
+    nav.side-nav{flex-direction:row;flex:none;overflow:visible;}
+    .nav-item{white-space:nowrap;}
+    .sidebar-foot{flex-direction:row;border-top:none;padding-top:0;margin-left:auto;}
+    .user-chip{display:none;}
+    .main{padding:20px 16px 40px;}
+    .stat-grid{grid-template-columns:1fr;}
+    .form-row{flex-direction:column;gap:0;}
+    .form-group{width:100%;}
+    .ticket-text{max-width:180px;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage" class="auth-shell">
+    <div class="auth-visual">
+        <span class="stub">TeguhDesk</span>
+        <h1>Support tickets,<br>organized in one place.</h1>
+        <p>Log requests, assign them to the right person, and track each one through to resolution.</p>
+        <div class="ticket-row">
+            <div class="mini-stub">Assign tickets to your team</div>
+            <div class="mini-stub">Track priority, status and due dates</div>
+            <div class="mini-stub">Control access with roles and permissions</div>
+        </div>
+    </div>
+    <div class="auth-panel">
+        <div class="auth-card">
+            <span class="eyebrow">Sign in</span>
+            <h1>Welcome back</h1>
+            <p class="auth-sub">Enter your details to open the queue.</p>
+
+            <div id="loginNotice" class="notice" role="alert" aria-live="assertive" style="display:none;"></div>
+
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="e.g. teguh" oninput="hideLoginNotice()">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Minimum 6 characters" minlength="6" oninput="hideLoginNotice()">
+
+            <button onclick="login()" class="btn-primary full">Sign in</button>
+            <br><br>
+            <button onclick="showRegister()" class="btn-ghost full">Create an account</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- REGISTER -->
+<div id="registerPage" class="auth-shell" style="display:none;">
+    <div class="auth-visual">
+        <span class="stub">TeguhDesk</span>
+        <h1>Create your<br>TeguhDesk account.</h1>
+        <p>Create an account to start logging and tracking tickets for your team.</p>
+    </div>
+    <div class="auth-panel">
+        <div class="auth-card">
+            <span class="eyebrow">Register</span>
+            <h1>Create account</h1>
+            <p class="auth-sub">It only takes a minute.</p>
+
+            <label for="regUsername">Username</label>
+            <input type="text" id="regUsername" placeholder="Choose a username">
+
+            <label for="regPassword">Password</label>
+            <input type="password" id="regPassword" placeholder="Minimum 6 characters">
+
+            <label for="regConfirm">Confirm Password</label>
+            <input type="password" id="regConfirm" placeholder="Re-type your password">
+
+            <button onclick="register()" class="btn-primary full">Register</button>
+            <br><br>
+            <button onclick="backLogin()" class="btn-ghost full">Back to Login</button>
+        </div>
+    </div>
+</div>
+
+<!-- APLIKASI -->
+<div id="app">
+<div class="app-shell">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-mark">TD</span>
+            <div class="brand-text">Teguh<b>Desk</b></div>
+        </div>
+
+        <nav class="side-nav">
+            <button class="nav-item" data-perm="dashboard.view" onclick="showDashboard()"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span>Dashboard</span></button>
+            <button class="nav-item" data-perm="ticket.create" onclick="showCreate()"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Create ticket</span></button>
+            <button class="nav-item" data-perm="ticket.list" onclick="showTicketList()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Ticket List</span></button>
+            <button class="nav-item" data-perm="archive.view" onclick="showArchive()"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4"/></svg><span>Archive</span></button>
+            <button class="nav-item" data-perm="assignee.manage" onclick="showAssignee()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg><span>Manage Assignee</span></button>
+            <button class="nav-item" data-perm="users.manage" onclick="showUsers()"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Manage Users</span></button>
+            <button class="nav-item" data-perm="roles.manage" onclick="showRoles()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>Roles &amp; Permissions</span></button>
+            <button class="nav-item" data-perm="config.manage" onclick="showConfig()"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Configuration</span></button>
+        </nav>
+
+        <div class="sidebar-foot">
+            <div class="user-chip">
+                <span class="avatar" id="chipAvatar">?</span>
+                <div><b id="chipName">-</b><span class="role" id="chipRole">-</span></div>
+            </div>
+            <button id="darkBtn" class="theme-toggle" onclick="toggleDarkMode()">Dark mode</button>
+            <button onclick="logout()" class="btn-logout">Log out</button>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <div id="dashboardPage">
+            <div class="page-head">
+                <span class="eyebrow">Overview</span>
+                <h1>Dashboard</h1>
+            </div>
+
+            <div class="stat-hero">
+                <span class="stat-label">Total tickets in queue</span>
+                <div class="stat-number"><span id="totalTicket">0</span></div>
+            </div>
+
+            <div class="stat-grid" id="priorityStats"></div>
+        </div>
+
+        <div id="ticketPage" style="display:none;">
+
+            <div class="card">
+                <span class="eyebrow">New</span>
+                <h2 style="margin-bottom:16px;">Create Task</h2>
+
+                <label for="title">Title</label>
+                <input id="title" placeholder="What's the issue?">
+
+                <label for="description">Description</label>
+                <textarea id="description" placeholder="Add any helpful detail..."></textarea>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assignee">Assign To</label>
+                        <select id="assignee"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dueDate">Due Date <span class="req-star" id="dueDateStar">*</span></label>
+                        <input type="date" id="dueDate">
+                    </div>
+                </div>
+
+                <button id="saveBtn" onclick="addTicket()" class="btn-primary">Create ticket</button>
+            </div>
+
+        </div>
+
+        <div id="ticketListPage" style="display:none;">
+
+            <div class="card">
+                <div class="card-head">
+                    <h2>Ticket List</h2>
+                    <button data-perm="ticket.archive" onclick="archiveAllTickets()" class="btn-danger-outline">Archive all</button>
+                </div>
+
+                <div class="list-toolbar">
+                    <input type="text" id="ticketSearchNumber" placeholder="Search by ticket number (e.g. TCK-003 or 3)..." oninput="render()">
+
+                    <div class="filter-menu" id="filterMenu">
+                        <button type="button" class="btn-ghost filter-toggle" id="filterToggle" aria-haspopup="true" aria-expanded="false" onclick="toggleFilterMenu(event)">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4-2v-4L3 5z"/></svg>
+                            <span>Filter</span>
+                            <span class="filter-count" id="filterCount">0</span>
+                        </button>
+
+                        <div class="filter-popover" id="filterPopover" role="dialog" aria-label="Filter tickets" onclick="event.stopPropagation()">
+                            <div class="filter-section">
+                                <p class="filter-section-title">Created date</p>
+                                <div class="filter-range">
+                                    <div>
+                                        <label for="filterCreatedFrom">From</label>
+                                        <input type="date" id="filterCreatedFrom" onchange="render()">
+                                    </div>
+                                    <div>
+                                        <label for="filterCreatedTo">To</label>
+                                        <input type="date" id="filterCreatedTo" onchange="render()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="filter-section">
+                                <p class="filter-section-title">Due date</p>
+                                <div class="filter-range">
+                                    <div>
+                                        <label for="filterDueFrom">From</label>
+                                        <input type="date" id="filterDueFrom" onchange="render()">
+                                    </div>
+                                    <div>
+                                        <label for="filterDueTo">To</label>
+                                        <input type="date" id="filterDueTo" onchange="render()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="filter-actions">
+                                <button type="button" class="btn-ghost" onclick="resetTicketFilters()">Reset</button>
+                                <button type="button" class="btn-primary" onclick="closeFilterMenu()">Done</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Priority</th>
+                            <th>Assign To</th>
+                            <th>Created</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ticketTable"></tbody>
+                </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="assigneePage" style="display:none;">
+
+            <div class="card">
+                <span class="eyebrow">Team</span>
+                <h2 style="margin-bottom:16px;">Manage Assignee</h2>
+
+                <input id="newAssignee" placeholder="Person Name">
+                <button id="assigneeBtn" onclick="addAssignee()" class="btn-primary">Add person</button>
+
+                <hr>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assigneeTable"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div id="archivePage" style="display:none;">
+
+            <div class="card">
+                <div class="card-head">
+                    <div>
+                        <span class="eyebrow">Archived</span>
+                        <h2>Archive</h2>
+                    </div>
+                    <button data-perm="archive.delete" onclick="deleteAllArchivedTickets()" class="btn-danger">Delete All</button>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Priority</th>
+                            <th>Assign To</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archiveTable"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div id="rolesPage" style="display:none;">
+
+            <div class="card">
+                <span class="eyebrow">Access Control</span>
+                <h2 style="margin-bottom:16px;">Roles &amp; Permissions</h2>
+
+                <label for="roleName">Role Name</label>
+                <input id="roleName" placeholder="e.g. Supervisor">
+
+                <label>Allowed Access</label>
+                <div id="permGrid"></div>
+
+                <div class="form-actions">
+                    <button id="roleBtn" onclick="saveRole()" class="btn-primary">Add Role</button>
+                    <button id="roleCancelBtn" onclick="cancelRoleEdit()" class="btn-ghost" style="display:none;">Cancel</button>
+                </div>
+
+                <hr>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Access</th>
+                            <th>Users</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roleTable"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div id="usersPage" style="display:none;">
+
+            <div class="card">
+                <span class="eyebrow">Accounts</span>
+                <h2 style="margin-bottom:16px;">Users</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newUserName">Username</label>
+                        <input id="newUserName" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserPass">Password</label>
+                        <input type="password" id="newUserPass" placeholder="Minimum 6 characters">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserRole">Role</label>
+                        <select id="newUserRole"></select>
+                    </div>
+                </div>
+                <button onclick="addUser()" class="btn-primary">Add User</button>
+
+                <hr>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTable"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div id="configPage" style="display:none;">
+
+            <div class="card">
+                <span class="eyebrow">System</span>
+                <h2 style="margin-bottom:16px;">Configuration</h2>
+
+                <div class="tabs" role="tablist" id="configTabs">
+                    <button type="button" class="tab-btn active" role="tab" data-tab="createTicket" onclick="switchConfigTab('createTicket')">Create Ticket</button>
+                </div>
+
+                <div class="tab-panel active" id="configTab-createTicket" role="tabpanel">
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <b>Due date wajib diisi</b>
+                            <span>Jika aktif, ticket tidak bisa dibuat atau diubah tanpa mengisi Due Date.</span>
+                        </div>
+                        <label class="switch" for="cfgRequireDueDate">
+                            <input type="checkbox" id="cfgRequireDueDate">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-actions" style="margin-top:16px;">
+                        <button class="btn-primary" onclick="saveConfig()">Save changes</button>
+                        <span class="config-status" id="configStatus">Tersimpan</span>
+                    </div>
+
+                    <hr>
+
+                    <h2 style="font-size:16px;margin-bottom:4px;">Priority</h2>
+                    <p style="margin:0 0 16px;font-size:13px;color:var(--text-soft);">Tambah atau ubah nama priority. Urutan dari terendah ke tertinggi. Perubahan langsung berlaku.</p>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex:2;">
+                            <label for="priorityName">Nama Priority</label>
+                            <input id="priorityName" maxlength="20" placeholder="e.g. Critical" onkeydown="if(event.key==='Enter')savePriority()">
+                        </div>
+                        <div class="form-group">
+                            <label for="priorityColor">Warna</label>
+                            <select id="priorityColor"></select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button id="priorityBtn" onclick="savePriority()" class="btn-primary">Add Priority</button>
+                        <button id="priorityCancelBtn" onclick="cancelPriorityEdit()" class="btn-ghost" style="display:none;">Cancel</button>
+                    </div>
+
+                    <table style="margin-top:20px;">
+                        <thead>
+                            <tr>
+                                <th>Priority</th>
+                                <th>Tickets</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="priorityTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="noAccessPage" class="no-access" style="display:none;">
+            <h2>Tidak ada akses</h2>
+            <p>Role Anda belum memiliki akses ke halaman apa pun. Hubungi admin.</p>
+        </div>
+
+    </main>
+</div>
+</div>
+
+<!-- LOGOUT CONFIRM -->
+<div id="logoutModal" class="modal-backdrop" style="display:none;" onclick="if(event.target===this)closeLogoutModal()">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
+        <h3 id="logoutTitle">Log out</h3>
+        <p>Apakah Anda yakin ingin logout?</p>
+        <div class="form-actions">
+            <button id="logoutCancelBtn" onclick="closeLogoutModal()" class="btn-ghost">Batal</button>
+            <button id="logoutOkBtn" onclick="confirmLogout()" class="btn-danger">Log out</button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+let tickets=[];
+let editIndex=-1;
+let editAssigneeIndex=-1;
+
+let assignees = [
+    "Teguh",
+    "Iwan",
+    "Elgin",
+    "Sebastian",
+    "Anugrah"
+];
+
+const PERMISSIONS=[
+    {key:"dashboard.view",  label:"View Dashboard",               group:"Dashboard"},
+    {key:"ticket.create",   label:"Create Ticket",                group:"Tickets"},
+    {key:"ticket.list",     label:"View Ticket List",             group:"Tickets"},
+    {key:"ticket.edit",     label:"Edit Ticket",                  group:"Tickets"},
+    {key:"ticket.status",   label:"Change Ticket Status",         group:"Tickets"},
+    {key:"ticket.archive",  label:"Archive Ticket (single & all)",group:"Archive"},
+    {key:"archive.view",    label:"View Archive",                 group:"Archive"},
+    {key:"archive.restore", label:"Restore Ticket",               group:"Archive"},
+    {key:"archive.delete",  label:"Delete Ticket Permanently",    group:"Archive"},
+    {key:"assignee.manage", label:"Manage Assignee",              group:"Administration"},
+    {key:"users.manage",    label:"Manage Users",                 group:"Administration"},
+    {key:"roles.manage",    label:"Manage Roles & Permissions",   group:"Administration"},
+    {key:"config.manage",   label:"Manage Configuration",         group:"Administration"}
+];
+
+let config={
+    requireDueDate:false
+};
+
+const PRIORITY_COLORS=[
+    {key:"teal",label:"Teal"},
+    {key:"blue",label:"Blue"},
+    {key:"amber",label:"Amber"},
+    {key:"coral",label:"Coral"},
+    {key:"violet",label:"Violet"}
+];
+
+// Urutan array = dari terendah ke tertinggi
+let priorities=[
+    {name:"Low",color:"teal"},
+    {name:"Medium",color:"amber"},
+    {name:"High",color:"coral"}
+];
+let editPriorityIndex=-1;
+
+let roles=[
+    {name:"Admin",  locked:true, perms:PERMISSIONS.map(p=>p.key)},
+    {name:"Agent",  perms:["dashboard.view","ticket.create","ticket.list","ticket.edit","ticket.status","ticket.archive","archive.view"]},
+    {name:"Viewer", perms:["dashboard.view","ticket.list","archive.view"]}
+];
+
+let users=[
+    {
+        username:"teguh",
+        password:"teguh123",
+        role:"Admin"
+    }
+];
+
+let currentUser=null;
+let editRoleIndex=-1;
+
+function esc(v){
+    return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function currentRole(){
+    if(!currentUser) return null;
+    return roles.find(r=>r.name===currentUser.role)||null;
+}
+
+function can(perm){
+    const r=currentRole();
+    return !!r && (r.locked===true || r.perms.includes(perm));
+}
+
+function deny(){
+    alert("Anda tidak memiliki akses untuk tindakan ini");
+    return false;
+}
+
+function applyPermissions(){
+    document.querySelectorAll('[data-perm]').forEach(function(el){
+        el.style.display=can(el.dataset.perm)?'':'none';
+    });
+    if(currentUser){
+        document.getElementById("chipAvatar").textContent=initials(currentUser.username);
+        document.getElementById("chipName").textContent=currentUser.username;
+        document.getElementById("chipRole").textContent=currentUser.role;
+    }
+}
+
+function showHome(){
+    const order=[
+        ["dashboard.view",showDashboard],
+        ["ticket.list",showTicketList],
+        ["archive.view",showArchive],
+        ["ticket.create",showCreate],
+        ["assignee.manage",showAssignee],
+        ["users.manage",showUsers],
+        ["roles.manage",showRoles],
+        ["config.manage",showConfig]
+    ];
+    const first=order.find(o=>can(o[0]));
+    if(first){first[1]();}
+    else{hideAllPages();document.getElementById("noAccessPage").style.display="block";setActiveNav(-1);}
+}
+
+function ticketActions(index){
+    let html="";
+    if(can("ticket.status")) html+=`<button onclick="changeStatus(${index})" class="btn-ghost">Next Status</button>`;
+    if(can("ticket.edit"))   html+=`<button onclick="editTicket(${index})" class="btn-warn">Edit</button>`;
+    if(can("ticket.archive"))html+=`<button onclick="archiveTicket(${index})" class="btn-danger-outline">Archive</button>`;
+    return html||`<span style="color:var(--text-soft);">-</span>`;
+}
+
+function archiveActions(index){
+    let html="";
+    if(can("archive.restore")) html+=`<button onclick="restoreTicket(${index})" class="btn-ghost">↩Restore</button>`;
+    if(can("archive.delete"))  html+=`<button onclick="deleteTicketPermanently(${index})" class="btn-danger">Delete</button>`;
+    return html||`<span style="color:var(--text-soft);">-</span>`;
+}
+
+/* ---------- Manage Users & Roles ---------- */
+function isAdminRole(name){
+    const r=roles.find(x=>x.name===name);
+    return !!r && r.locked===true;
+}
+
+function renderPermGrid(selected){
+    const grid=document.getElementById("permGrid");
+    const groups={};
+    PERMISSIONS.forEach(p=>{(groups[p.group]=groups[p.group]||[]).push(p);});
+    grid.innerHTML=Object.keys(groups).map(function(g){
+        return `<div class="perm-group">
+            <div class="perm-group-title">${esc(g)}</div>
+            <div class="perm-grid">
+                ${groups[g].map(p=>`<label class="perm-item"><input type="checkbox" value="${p.key}" ${selected.includes(p.key)?"checked":""}> ${esc(p.label)}</label>`).join("")}
+            </div>
+        </div>`;
+    }).join("");
+}
+
+/* ---------- Configuration ---------- */
+function switchConfigTab(key){
+    document.querySelectorAll("#configTabs .tab-btn").forEach(function(b){
+        b.classList.toggle("active",b.dataset.tab===key);
+    });
+    document.querySelectorAll("#configPage .tab-panel").forEach(function(p){
+        p.classList.toggle("active",p.id==="configTab-"+key);
+    });
+}
+
+function showConfig(){
+    if(!can("config.manage")) return deny();
+    hideAllPages();
+    document.getElementById("configPage").style.display="block";
+    document.getElementById("cfgRequireDueDate").checked=config.requireDueDate;
+    cancelPriorityEdit();
+    renderPriorityConfig();
+    document.getElementById("configStatus").classList.remove("show");
+    setActiveNav(7);
+}
+
+function saveConfig(){
+    if(!can("config.manage")) return deny();
+    config.requireDueDate=document.getElementById("cfgRequireDueDate").checked;
+    updateDueDateRequiredUI();
+    const st=document.getElementById("configStatus");
+    st.classList.add("show");
+    clearTimeout(saveConfig._t);
+    saveConfig._t=setTimeout(function(){st.classList.remove("show");},2000);
+}
+
+document.addEventListener("input",function(e){
+    if(e.target && e.target.id==="dueDate") e.target.classList.remove("input-error");
+});
+
+function updateDueDateRequiredUI(){
+    const star=document.getElementById("dueDateStar");
+    if(star) star.classList.toggle("show",config.requireDueDate);
+    const el=document.getElementById("dueDate");
+    if(el && !config.requireDueDate) el.classList.remove("input-error");
+}
+
+/* ---------- Priority management ---------- */
+function priorityColor(name){
+    const p=priorities.find(x=>x.name===name);
+    return p?p.color:"blue";
+}
+
+function renderPriorityOptions(){
+    const sel=document.getElementById("priority");
+    if(!sel) return;
+    const cur=sel.value;
+    sel.innerHTML=priorities.map(p=>`<option value="${esc(p.name)}">${esc(p.name)}</option>`).join("");
+    if(priorities.some(p=>p.name===cur)) sel.value=cur;
+}
+renderPriorityOptions();
+
+function renderPriorityConfig(){
+    const colorSel=document.getElementById("priorityColor");
+    if(!colorSel.options.length){
+        colorSel.innerHTML=PRIORITY_COLORS.map(c=>`<option value="${c.key}">${c.label}</option>`).join("");
+        colorSel.value="blue";
+    }
+    const body=document.getElementById("priorityTable");
+    body.innerHTML=priorities.map(function(p,i){
+        const used=tickets.filter(t=>t.priority===p.name).length;
+        return `<tr>
+            <td><span class="badge" style="--tone:var(--${p.color})">${esc(p.name)}</span></td>
+            <td>${used}</td>
+            <td><div class="row-actions">
+                <button onclick="editPriority(${i})" class="btn-warn">Edit</button>
+                <button onclick="deletePriority(${i})" class="btn-danger-outline">Delete</button>
+            </div></td>
+        </tr>`;
+    }).join("");
+}
+
+function savePriority(){
+    if(!can("config.manage")) return deny();
+    const name=document.getElementById("priorityName").value.trim();
+    const color=document.getElementById("priorityColor").value;
+
+    if(name===""){alert("Nama priority tidak boleh kosong");return;}
+    if(name.length>20){alert("Nama priority maksimal 20 karakter");return;}
+    const duplicate=priorities.some((p,i)=>p.name.toLowerCase()===name.toLowerCase() && i!==editPriorityIndex);
+    if(duplicate){alert("Nama priority sudah ada");return;}
+
+    if(editPriorityIndex>=0){
+        const oldName=priorities[editPriorityIndex].name;
+        priorities[editPriorityIndex]={name:name,color:color};
+        tickets.forEach(t=>{if(t.priority===oldName)t.priority=name;});
+        const sel=document.getElementById("priority");
+        if(sel && sel.value===oldName) sel.dataset.rename=name;
+    }else{
+        priorities.push({name:name,color:color});
+    }
+
+    cancelPriorityEdit();
+    renderPriorityConfig();
+    const sel=document.getElementById("priority");
+    const renamed=sel && sel.dataset.rename;
+    if(sel) delete sel.dataset.rename;
+    renderPriorityOptions();
+    if(renamed) sel.value=renamed;
+}
+
+function editPriority(index){
+    if(!can("config.manage")) return deny();
+    editPriorityIndex=index;
+    document.getElementById("priorityName").value=priorities[index].name;
+    document.getElementById("priorityColor").value=priorities[index].color;
+    document.getElementById("priorityBtn").innerHTML="Update Priority";
+    document.getElementById("priorityCancelBtn").style.display="";
+    document.getElementById("priorityName").focus();
+}
+
+function cancelPriorityEdit(){
+    editPriorityIndex=-1;
+    document.getElementById("priorityName").value="";
+    document.getElementById("priorityColor").value="blue";
+    document.getElementById("priorityBtn").innerHTML="Add Priority";
+    document.getElementById("priorityCancelBtn").style.display="none";
+}
+
+function deletePriority(index){
+    if(!can("config.manage")) return deny();
+    const name=priorities[index].name;
+    if(priorities.length<=1){alert("Minimal harus ada satu priority");return;}
+    if(tickets.some(t=>t.priority===name)){alert("Priority \""+name+"\" masih dipakai oleh ticket (termasuk yang diarsipkan), jadi tidak bisa dihapus");return;}
+    priorities.splice(index,1);
+    if(editPriorityIndex===index) cancelPriorityEdit();
+    else if(editPriorityIndex>index) editPriorityIndex--;
+    renderPriorityConfig();
+    renderPriorityOptions();
+}
+
+function showUsers(){
+    if(!can("users.manage")) return deny();
+    hideAllPages();
+    document.getElementById("usersPage").style.display="block";
+    renderUsers();
+    setActiveNav(5);
+}
+
+function showRoles(){
+    if(!can("roles.manage")) return deny();
+    hideAllPages();
+    document.getElementById("rolesPage").style.display="block";
+    cancelRoleEdit();
+    renderRoles();
+    setActiveNav(6);
+}
+
+function saveRole(){
+    if(!can("roles.manage")) return deny();
+    const name=document.getElementById("roleName").value.trim();
+    const perms=Array.from(document.querySelectorAll("#permGrid input:checked")).map(i=>i.value);
+
+    if(name===""){alert("Nama role tidak boleh kosong");return;}
+    if(perms.length===0){alert("Pilih minimal satu akses");return;}
+
+    const duplicate=roles.some((r,i)=>r.name.toLowerCase()===name.toLowerCase() && i!==editRoleIndex);
+    if(duplicate){alert("Nama role sudah ada");return;}
+
+    if(editRoleIndex>=0){
+        const role=roles[editRoleIndex];
+        const oldName=role.name;
+        role.name=name;
+        role.perms=perms;
+        users.forEach(u=>{if(u.role===oldName)u.role=name;});
+    }else{
+        roles.push({name:name,perms:perms});
+    }
+
+    cancelRoleEdit();
+    renderRoles();
+    renderUsers();
+    applyPermissions();
+    if(!can("roles.manage")) showHome();
+}
+
+function editRole(index){
+    if(!can("roles.manage")) return deny();
+    const role=roles[index];
+    if(role.locked){alert("Role Admin tidak dapat diubah");return;}
+    editRoleIndex=index;
+    document.getElementById("roleName").value=role.name;
+    renderPermGrid(role.perms);
+    document.getElementById("roleBtn").innerHTML="Update Role";
+    document.getElementById("roleCancelBtn").style.display="inline-block";
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function cancelRoleEdit(){
+    editRoleIndex=-1;
+    document.getElementById("roleName").value="";
+    renderPermGrid([]);
+    document.getElementById("roleBtn").innerHTML="Add Role";
+    document.getElementById("roleCancelBtn").style.display="none";
+}
+
+function deleteRole(index){
+    if(!can("roles.manage")) return deny();
+    const role=roles[index];
+    if(role.locked){alert("Role Admin tidak dapat dihapus");return;}
+    if(users.some(u=>u.role===role.name)){
+        alert("Role masih dipakai oleh user. Pindahkan user ke role lain terlebih dahulu.");
+        return;
+    }
+    if(confirm("Hapus role ini?")){
+        roles.splice(index,1);
+        if(editRoleIndex===index) cancelRoleEdit();
+        else if(editRoleIndex>index) editRoleIndex--;
+        renderRoles();
+        renderUsers();
+    }
+}
+
+function renderRoles(){
+    const table=document.getElementById("roleTable");
+    table.innerHTML=roles.map(function(role,index){
+        const access=role.locked
+            ? `<span class="chip all">ALL ACCESS</span>`
+            : role.perms.map(k=>{
+                const p=PERMISSIONS.find(x=>x.key===k);
+                return p?`<span class="chip">${esc(p.label)}</span>`:"";
+            }).join("");
+        const count=users.filter(u=>u.role===role.name).length;
+        const actions=role.locked
+            ? `<span style="color:var(--text-soft);font-size:12px;">Locked</span>`
+            : `<div class="row-actions">
+                <button onclick="editRole(${index})" class="btn-warn">Edit</button>
+                <button onclick="deleteRole(${index})" class="btn-danger">Delete</button>
+               </div>`;
+        return `<tr>
+            <td><b>${esc(role.name)}</b></td>
+            <td>${access}</td>
+            <td>${count}</td>
+            <td>${actions}</td>
+        </tr>`;
+    }).join("");
+}
+
+function renderUsers(){
+    const sel=document.getElementById("newUserRole");
+    const prev=sel.value;
+    sel.innerHTML=roles.map(r=>`<option value="${esc(r.name)}">${esc(r.name)}</option>`).join("");
+    if(roles.some(r=>r.name===prev)) sel.value=prev;
+
+    const table=document.getElementById("userTable");
+    table.innerHTML=users.map(function(user,index){
+        const isSelf=currentUser && user.username===currentUser.username;
+        const options=roles.map(r=>`<option value="${esc(r.name)}" ${r.name===user.role?"selected":""}>${esc(r.name)}</option>`).join("");
+        return `<tr>
+            <td>${index+1}</td>
+            <td><div class="avatar-name"><span class="avatar">${esc(initials(user.username))}</span>${esc(user.username)}${isSelf?' <span class="chip">you</span>':""}</div></td>
+            <td><select class="inline-select" ${isSelf?"disabled title='Tidak bisa mengubah role sendiri'":""} onchange="changeUserRole(${index},this.value)">${options}</select></td>
+            <td><div class="row-actions">
+                <button onclick="deleteUser(${index})" class="btn-danger" ${isSelf?"disabled style='opacity:.4;cursor:not-allowed;'":""}>Delete</button>
+            </div></td>
+        </tr>`;
+    }).join("");
+}
+
+const EYE_ICON='<svg class="icon-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>'
+    +'<svg class="icon-eye-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
+function setPasswordVisible(btn,visible){
+    const input=btn.parentElement.querySelector("input");
+    input.type=visible?"text":"password";
+    btn.classList.toggle("is-visible",visible);
+    btn.setAttribute("aria-pressed",visible?"true":"false");
+    const label=visible?"Sembunyikan password":"Tampilkan password";
+    btn.setAttribute("aria-label",label);
+    btn.title=label;
+}
+
+function togglePassword(btn){
+    const input=btn.parentElement.querySelector("input");
+    setPasswordVisible(btn,input.type==="password");
+}
+
+function resetPasswordToggles(){
+    document.querySelectorAll(".pw-toggle").forEach(function(btn){
+        setPasswordVisible(btn,false);
+    });
+}
+
+// Pasang tombol show/hide di semua kolom password
+function initPasswordToggles(){
+    document.querySelectorAll('input[type="password"]').forEach(function(input){
+        if(input.parentElement.classList.contains("pw-field")) return;
+        const wrap=document.createElement("div");
+        wrap.className="pw-field";
+        input.parentNode.insertBefore(wrap,input);
+        wrap.appendChild(input);
+        const btn=document.createElement("button");
+        btn.type="button";
+        btn.className="pw-toggle";
+        btn.innerHTML=EYE_ICON;
+        btn.addEventListener("click",function(){togglePassword(btn);});
+        wrap.appendChild(btn);
+        setPasswordVisible(btn,false);
+    });
+}
+
+function addUser(){
+    if(!can("users.manage")) return deny();
+    const username=document.getElementById("newUserName").value.trim();
+    const password=document.getElementById("newUserPass").value;
+    const role=document.getElementById("newUserRole").value;
+
+    if(username===""||password===""){alert("Username dan password wajib diisi");return;}
+    if(password.length<6){alert("Password minimal 6 karakter");return;}
+    if(users.some(u=>u.username===username)){alert("Username sudah digunakan");return;}
+    if(!roles.some(r=>r.name===role)){alert("Pilih role yang valid");return;}
+
+    users.push({username:username,password:password,role:role});
+
+    document.getElementById("newUserName").value="";
+    document.getElementById("newUserPass").value="";
+    resetPasswordToggles();
+    renderRoles();
+    renderUsers();
+}
+
+function changeUserRole(index,roleName){
+    if(!can("users.manage")){renderUsers();return deny();}
+    const user=users[index];
+    if(isAdminRole(user.role) && !isAdminRole(roleName)){
+        const adminCount=users.filter(u=>isAdminRole(u.role)).length;
+        if(adminCount<=1){
+            alert("Tidak bisa mengubah role: minimal harus ada satu Admin");
+            renderUsers();
+            return;
+        }
+    }
+    user.role=roleName;
+    renderRoles();
+    renderUsers();
+}
+
+function deleteUser(index){
+    if(!can("users.manage")) return deny();
+    const user=users[index];
+    if(currentUser && user.username===currentUser.username){alert("Anda tidak bisa menghapus akun sendiri");return;}
+    if(isAdminRole(user.role) && users.filter(u=>isAdminRole(u.role)).length<=1){
+        alert("Minimal harus ada satu Admin");
+        return;
+    }
+    if(confirm("Hapus user ini?")){
+        users.splice(index,1);
+        renderRoles();
+        renderUsers();
+    }
+}
+
+function addTicket(){
+
+if(editIndex>=0 ? !can("ticket.edit") : !can("ticket.create")) return deny();
+
+
+const title=document.getElementById("title").value;
+
+const desc=document.getElementById("description").value;
+
+const priority=document.getElementById("priority").value;
+
+const assignee=document.getElementById("assignee").value;
+
+const dueDate = document.getElementById("dueDate").value;
+
+if(title==""){
+alert("Title required");
+return;
+}
+
+if(config.requireDueDate && !dueDate){
+const dueEl=document.getElementById("dueDate");
+dueEl.classList.add("input-error");
+dueEl.focus();
+alert("Due date wajib diisi");
+return;
+}
+
+if(editIndex>=0){
+tickets[editIndex].title=title;
+tickets[editIndex].desc=desc;
+tickets[editIndex].priority=priority;
+tickets[editIndex].assignee=assignee;
+tickets[editIndex].dueDate=dueDate;
+editIndex=-1;
+document.querySelector('#ticketPage .card button').innerText='Create Ticket';
+}else{
+tickets.push({
+    id:tickets.length+1,
+    title,
+    desc,
+    priority,
+    assignee,
+    dueDate,
+    createdAt:todayStr(),
+    status:"Open"
+});
+}
+
+document.getElementById("title").value="";
+document.getElementById("description").value="";
+document.getElementById("dueDate").value="";
+
+    render();updateDashboard();showTicketList();
+}
+
+function loadAssignee(){
+
+    const select = document.getElementById("assignee");
+
+    select.innerHTML = "";
+
+    assignees.forEach(function(person){
+
+        select.innerHTML += `
+            <option value="${person}">
+                ${person}
+            </option>
+        `;
+
+    });
+
+}   
+
+
+function nextStatus(status){
+
+if(status=="Open") return "In Progress";
+
+if(status=="In Progress") return "Closed";
+
+return "Open";
+
+}
+
+function todayStr(){
+const d=new Date();
+return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+
+function getTicketFilters(){
+const v=id=>{const el=document.getElementById(id);return el?el.value:"";};
+return {
+createdFrom:v("filterCreatedFrom"),
+createdTo:v("filterCreatedTo"),
+dueFrom:v("filterDueFrom"),
+dueTo:v("filterDueTo")
+};
+}
+
+function outOfRange(value,from,to){
+if(!from && !to) return false;
+if(!value) return true;
+if(from && value<from) return true;
+if(to && value>to) return true;
+return false;
+}
+
+function resetTicketFilters(){
+["filterCreatedFrom","filterCreatedTo","filterDueFrom","filterDueTo"].forEach(id=>{
+const el=document.getElementById(id);
+if(el) el.value="";
+});
+render();
+}
+
+function toggleFilterMenu(e){
+if(e) e.stopPropagation();
+const pop=document.getElementById("filterPopover");
+const open=!pop.classList.contains("open");
+pop.classList.toggle("open",open);
+document.getElementById("filterToggle").setAttribute("aria-expanded",open);
+}
+
+function closeFilterMenu(){
+const pop=document.getElementById("filterPopover");
+if(!pop) return;
+pop.classList.remove("open");
+document.getElementById("filterToggle").setAttribute("aria-expanded","false");
+}
+
+function updateFilterBadge(){
+const f=getTicketFilters();
+let n=0;
+if(f.createdFrom||f.createdTo) n++;
+if(f.dueFrom||f.dueTo) n++;
+const badge=document.getElementById("filterCount");
+const btn=document.getElementById("filterToggle");
+if(!badge||!btn) return;
+badge.textContent=n;
+badge.classList.toggle("show",n>0);
+btn.classList.toggle("active",n>0);
+}
+
+document.addEventListener("click",function(e){
+const menu=document.getElementById("filterMenu");
+if(menu && !menu.contains(e.target)) closeFilterMenu();
+});
+document.addEventListener("keydown",function(e){
+if(e.key==="Escape") closeFilterMenu();
+});
+
+function render(){
+
+const table=document.getElementById("ticketTable");
+
+table.innerHTML="";
+
+const searchBox=document.getElementById("ticketSearchNumber");
+
+const query=(searchBox?searchBox.value:"").trim().toLowerCase().replace(/^tck-?/,"");
+
+const f=getTicketFilters();
+const hasFilter=!!(f.createdFrom||f.createdTo||f.dueFrom||f.dueTo);
+updateFilterBadge();
+
+let found=0;
+
+for(let index=tickets.length-1; index>=0; index--){
+
+const ticket=tickets[index];
+
+if(ticket.archived) continue;
+
+if(outOfRange(ticket.createdAt,f.createdFrom,f.createdTo)) continue;
+if(outOfRange(ticket.dueDate,f.dueFrom,f.dueTo)) continue;
+
+const ticketCode=`TCK-${String(ticket.id).padStart(3,'0')}`;
+
+if(query!="" && !String(ticket.id).includes(query) && !ticketCode.toLowerCase().includes(query)) continue;
+
+found++;
+
+
+
+let statusClass="open";
+
+if(ticket.status=="In Progress")
+statusClass="progress";
+
+if(ticket.status=="Closed")
+statusClass="closed";
+
+table.innerHTML+=`
+<tr>
+
+<td><span class="ticket-id">${ticketCode}</span></td>
+
+<td class="ticket-text">
+<span class="ticket-title">${ticket.title}</span>
+<span class="ticket-desc">${ticket.desc}</span>
+</td>
+
+<td>
+<span class="badge" style="--tone:var(--${priorityColor(ticket.priority)})">
+${esc(ticket.priority)}
+</span>
+</td>
+
+<td>
+${ticket.assignee}
+</td>
+
+<td>
+${ticket.createdAt || "-"}
+</td>
+
+<td>
+${ticket.dueDate || "-"}
+</td>
+
+<td>
+<span class="status ${statusClass}">
+${ticket.status}
+</span>
+</td>
+
+<td>
+<div class="row-actions">${ticketActions(index)}</div>
+</td>
+
+</tr>
+`;
+
+}
+
+if(found===0){
+table.innerHTML=`<tr><td colspan="8" style="text-align:center;color:var(--text-soft);padding:24px;">${hasFilter?"Tidak ada ticket yang sesuai dengan filter.":(query!=""?"Nomor ticket tidak ditemukan.":"Belum ada ticket.")}</td></tr>`;
+}
+
+}
+
+
+function editTicket(index){
+if(!can("ticket.edit")) return deny();
+hideAllPages();
+document.getElementById("ticketPage").style.display="block";
+updateDueDateRequiredUI();
+renderPriorityOptions();
+setActiveNav(1);
+const t=tickets[index];
+editIndex=index;
+title.value=t.title;
+description.value=t.desc;
+priority.value=t.priority;
+assignee.value=t.assignee;
+dueDate.value=t.dueDate;
+document.getElementById('saveBtn').innerText='Update ticket';
+window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function changeStatus(index){
+if(!can("ticket.status")) return deny();
+
+tickets[index].status=nextStatus(tickets[index].status);
+
+render();updateDashboard();
+
+}
+
+function archiveTicket(index){
+    if(!can("ticket.archive")) return deny();
+
+    tickets[index].archived=true;
+
+    render();updateDashboard();
+
+}
+
+function restoreTicket(index){
+    if(!can("archive.restore")) return deny();
+
+    tickets[index].archived=false;
+
+    render();updateDashboard();renderArchive();
+
+}
+
+function deleteTicketPermanently(index){
+    if(!can("archive.delete")) return deny();
+
+    let konfirmasi = confirm("Hapus ticket ini secara permanen? Tindakan ini tidak bisa dibatalkan.");
+
+    if(konfirmasi){
+
+        tickets.splice(index,1);
+
+        // Perbarui nomor ID
+        tickets.forEach(function(ticket,i){
+            ticket.id=i+1;
+        });
+
+        render();updateDashboard();renderArchive();
+
+    }
+
+}
+
+function renderArchive(){
+
+    const table=document.getElementById("archiveTable");
+
+    table.innerHTML="";
+
+    const archived=tickets.filter(t=>t.archived);
+
+    if(archived.length===0){
+        table.innerHTML=`<tr><td colspan="7" style="text-align:center;color:var(--text-soft);padding:24px;">Belum ada ticket yang diarsipkan.</td></tr>`;
+        return;
+    }
+
+    tickets.forEach((ticket,index)=>{
+
+        if(!ticket.archived) return;
+
+        
+
+        let statusClass="open";
+
+        if(ticket.status=="In Progress")
+        statusClass="progress";
+
+        if(ticket.status=="Closed")
+        statusClass="closed";
+
+        table.innerHTML+=`
+<tr>
+
+<td><span class="ticket-id">TCK-${String(ticket.id).padStart(3,'0')}</span></td>
+
+<td class="ticket-text">
+<span class="ticket-title">${ticket.title}</span>
+<span class="ticket-desc">${ticket.desc}</span>
+</td>
+
+<td>
+<span class="badge" style="--tone:var(--${priorityColor(ticket.priority)})">
+${esc(ticket.priority)}
+</span>
+</td>
+
+<td>
+${ticket.assignee}
+</td>
+
+<td>
+${ticket.dueDate || "-"}
+</td>
+
+<td>
+<span class="status ${statusClass}">
+${ticket.status}
+</span>
+</td>
+
+<td>
+<div class="row-actions">${archiveActions(index)}</div>
+</td>
+
+</tr>
+`;
+
+    });
+
+}
+
+function deleteAllArchivedTickets(){
+
+    if(!can("archive.delete")) return deny();
+
+    const archivedCount=tickets.filter(t=>t.archived).length;
+
+    if(archivedCount===0){
+        alert("Tidak ada ticket arsip yang dapat dihapus");
+        return;
+    }
+
+    if(confirm("Hapus SEMUA ticket di arsip secara permanen? Tindakan ini tidak bisa dibatalkan.")){
+        tickets=tickets.filter(t=>!t.archived);
+        tickets.forEach(function(ticket,i){
+            ticket.id=i+1;
+        });
+        render();updateDashboard();renderArchive();
+    }
+
+}
+
+function archiveAllTickets(){
+
+    if(!can("ticket.archive")) return deny();
+
+    const activeCount=tickets.filter(t=>!t.archived).length;
+
+    if(activeCount===0){
+        alert("Tidak ada ticket aktif yang dapat diarsipkan");
+        return;
+    }
+
+    if(confirm("Arsipkan SEMUA ticket aktif?")){
+        tickets.forEach(function(ticket){
+            if(!ticket.archived) ticket.archived=true;
+        });
+        render();updateDashboard();
+    }
+}
+
+function showLoginNotice(type,title,message,withRegisterLink){
+    const box=document.getElementById("loginNotice");
+    box.className="notice"+(type==="warn"?" warn":"");
+    box.innerHTML=`
+        <span class="notice-icon">${type==="warn"?'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></svg>'}</span>
+        <div class="notice-body">
+            <b>${title}</b>
+            ${message}
+            ${withRegisterLink?`<br><button type="button" class="notice-link" onclick="showRegister()">Buat akun sekarang</button>`:""}
+        </div>`;
+    box.style.display="flex";
+    // jalankan ulang animasi getar setiap notifikasi muncul
+    void box.offsetWidth;
+    box.classList.add("shake");
+}
+
+function hideLoginNotice(){
+    const box=document.getElementById("loginNotice");
+    if(box) box.style.display="none";
+    document.getElementById("username").classList.remove("input-error");
+    document.getElementById("password").classList.remove("input-error");
+}
+
+function login(){
+
+    const usernameEl=document.getElementById("username");
+    const passwordEl=document.getElementById("password");
+    const username=usernameEl.value;
+    const password=passwordEl.value;
+
+    hideLoginNotice();
+
+    // Field kosong
+    if(username==="" || password===""){
+        if(username==="") usernameEl.classList.add("input-error");
+        if(password==="") passwordEl.classList.add("input-error");
+        showLoginNotice("warn","Data belum lengkap","Username dan password wajib diisi.");
+        (username===""?usernameEl:passwordEl).focus();
+        return;
+    }
+
+    const account=users.find(function(item){
+        return item.username==username;
+    });
+
+    // 1) User belum dibuat
+    if(!account){
+        usernameEl.classList.add("input-error");
+        showLoginNotice(
+            "error",
+            "Akun belum terdaftar",
+            `Username <b style="display:inline;">${esc(username)}</b> belum dibuat. Periksa penulisan username atau daftar akun baru.`,
+            true
+        );
+        usernameEl.focus();
+        return;
+    }
+
+    // 2) Password salah
+    if(account.password!=password){
+        passwordEl.classList.add("input-error");
+        passwordEl.value="";
+        showLoginNotice("error","Password salah","Password yang Anda masukkan tidak sesuai. Silakan coba lagi.");
+        passwordEl.focus();
+        return;
+    }
+
+    // Login berhasil
+    currentUser=account;
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("app").style.display="block";
+    applyPermissions();
+    loadAssignee();
+    renderAssignee();
+    render();
+    showHome();
+
+}
+
+function register(){
+
+    const username=document.getElementById("regUsername").value;
+    const password=document.getElementById("regPassword").value;
+    const confirm=document.getElementById("regConfirm").value;
+
+    if(username=="" || password==""){
+
+        alert("Semua field wajib diisi");
+        return;
+
+    }
+
+    if(password.length < 6){
+
+        alert("Password minimal 6 karakter");
+        return;
+
+    }
+
+    if(password!=confirm){
+
+        alert("Password tidak sama");
+        return;
+
+    }
+
+    let sudahAda=users.find(user=>user.username==username);
+
+    if(sudahAda){
+
+        alert("Username sudah digunakan");
+        return;
+
+    }
+
+    users.push({
+        username:username,
+        password:password,
+        role:"Viewer"
+    });
+
+    alert("Registrasi berhasil");
+
+    document.getElementById("regUsername").value="";
+    document.getElementById("regPassword").value="";
+    document.getElementById("regConfirm").value="";
+
+    backLogin();
+
+}
+
+function showRegister(){
+
+    hideLoginNotice();
+
+    document.getElementById("loginPage").style.display="none";
+
+    document.getElementById("registerPage").style.display="flex";
+
+}
+
+function backLogin(){
+
+    hideLoginNotice();
+    resetPasswordToggles();
+
+    document.getElementById("registerPage").style.display="none";
+
+    document.getElementById("loginPage").style.display="flex";
+
+}
+
+function logout(){
+    // Dialog konfirmasi di dalam halaman (confirm() bawaan browser
+    // diblokir di preview/iframe sandbox sehingga logout tidak jalan)
+    document.getElementById("logoutModal").style.display="flex";
+    document.getElementById("logoutOkBtn").focus();
+}
+
+function closeLogoutModal(){
+    document.getElementById("logoutModal").style.display="none";
+}
+
+function confirmLogout(){
+
+    closeLogoutModal();
+
+    // Bersihkan input login
+    document.getElementById("username").value="";
+    document.getElementById("password").value="";
+    hideLoginNotice();
+
+    // Bersihkan sisa sesi sebelumnya supaya tidak terbawa ke user berikutnya
+    editIndex=-1;
+    document.getElementById("title").value="";
+    document.getElementById("description").value="";
+    document.getElementById("dueDate").value="";
+    document.getElementById("priority").selectedIndex=0;
+    document.getElementById("saveBtn").innerHTML="Create ticket";
+    document.getElementById("ticketSearchNumber").value="";
+    ["filterCreatedFrom","filterCreatedTo","filterDueFrom","filterDueTo"].forEach(id=>{document.getElementById(id).value="";});
+    closeFilterMenu();updateFilterBadge();
+
+    editAssigneeIndex=-1;
+    document.getElementById("newAssignee").value="";
+    document.getElementById("assigneeBtn").innerHTML="Add Person";
+
+    document.getElementById("newUserName").value="";
+    document.getElementById("newUserPass").value="";
+    resetPasswordToggles();
+    cancelRoleEdit();
+
+    // Hapus sesi, sembunyikan aplikasi, tampilkan halaman login
+    currentUser=null;
+    hideAllPages();
+    setActiveNav(-1);
+    document.getElementById("app").style.display="none";
+    document.getElementById("loginPage").style.display="flex";
+}
+
+document.addEventListener("keydown",function(e){
+    if(e.key==="Escape") closeLogoutModal();
+});
+
+
+function updateDashboard(){
+    const active=tickets.filter(t=>!t.archived);
+    document.getElementById("totalTicket").innerText=active.length;
+    document.getElementById("priorityStats").innerHTML=priorities.slice().reverse().map(function(p){
+        const n=active.filter(t=>t.priority===p.name).length;
+        return `<div class="stat-card" style="--stat:var(--${p.color})"><div class="stat-icon"></div><div><b>${esc(p.name)}</b><span class="count">${n} task</span></div></div>`;
+    }).join("");
+}
+function hideAllPages(){
+    document.getElementById("dashboardPage").style.display="none";
+    document.getElementById("ticketPage").style.display="none";
+    document.getElementById("ticketListPage").style.display="none";
+    document.getElementById("assigneePage").style.display="none";
+    document.getElementById("archivePage").style.display="none";
+    document.getElementById("usersPage").style.display="none";
+    document.getElementById("rolesPage").style.display="none";
+    document.getElementById("configPage").style.display="none";
+    document.getElementById("noAccessPage").style.display="none";
+}
+function showDashboard(){if(!can("dashboard.view")) return deny();hideAllPages();document.getElementById("dashboardPage").style.display="block";updateDashboard();setActiveNav(0);}
+function showCreate(){if(!can("ticket.create")) return deny();hideAllPages();document.getElementById("ticketPage").style.display="block";updateDueDateRequiredUI();renderPriorityOptions();setActiveNav(1);}
+
+function showTicketList(){if(!can("ticket.list")) return deny();hideAllPages();document.getElementById("ticketListPage").style.display="block";render();setActiveNav(2);}
+
+function showAssignee(){if(!can("assignee.manage")) return deny();hideAllPages();document.getElementById("assigneePage").style.display="block";renderAssignee();setActiveNav(4);}
+
+function showArchive(){if(!can("archive.view")) return deny();hideAllPages();document.getElementById("archivePage").style.display="block";renderArchive();setActiveNav(3);}
+
+function setActiveNav(i){
+    document.querySelectorAll('.nav-item').forEach(function(el,idx){
+        el.classList.toggle('active', idx===i);
+    });
+}
+
+function addAssignee(){
+
+    if(!can("assignee.manage")) return deny();
+
+    const nama=document.getElementById("newAssignee").value.trim();
+    if(nama==""){alert("Nama tidak boleh kosong");return;}
+    if(editAssigneeIndex>=0){
+        const oldName=assignees[editAssigneeIndex];
+        assignees[editAssigneeIndex]=nama;
+        tickets.forEach(t=>{if(t.assignee===oldName)t.assignee=nama;});
+        editAssigneeIndex=-1;
+        document.getElementById("assigneeBtn").innerHTML="Add Person";
+    }else{
+        if(assignees.includes(nama)){alert("Nama sudah ada");return;}
+        assignees.push(nama);
+    }
+    document.getElementById("newAssignee").value="";
+    loadAssignee();renderAssignee();render();
+}
+
+function initials(name){
+    return name.trim().split(/\s+/).map(w=>w[0]).join('').substring(0,2).toUpperCase();
+}
+
+function renderAssignee(){
+
+    const table=document.getElementById("assigneeTable");
+
+    table.innerHTML="";
+
+    assignees.forEach(function(person,index){
+
+        table.innerHTML+=`
+
+        <tr>
+
+            <td>${index+1}</td>
+
+            <td><div class="avatar-name"><span class="avatar">${initials(person)}</span>${person}</div></td>
+
+            <td>
+
+                <div class="row-actions">
+<button onclick="editAssignee(${index})" class="btn-warn">Edit</button>
+<button onclick="deleteAssignee(${index})" class="btn-danger">
+
+                    Delete
+
+                </button>
+</div>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+function editAssignee(index){if(!can("assignee.manage")) return deny();editAssigneeIndex=index;document.getElementById("newAssignee").value=assignees[index];document.getElementById("assigneeBtn").innerHTML="Update Person";}
+
+function deleteAssignee(index){
+
+    if(!can("assignee.manage")) return deny();
+
+    if(confirm("Hapus person ini?")){
+
+        assignees.splice(index,1);
+
+        loadAssignee();
+
+        renderAssignee();
+
+    }
+
+}
+
+initPasswordToggles();
+loadAssignee();
+render();updateDashboard();
+
+
+function toggleDarkMode(){
+ const d=document.body.classList.toggle('dark');
+ const b=document.getElementById('darkBtn');
+ if(b)b.textContent=d?'Light mode':'Dark mode';
+ localStorage.setItem('theme',d?'dark':'light');
+}
+window.addEventListener('DOMContentLoaded',()=>{
+ if(localStorage.getItem('theme')==='dark'){
+   document.body.classList.add('dark');
+   const b=document.getElementById('darkBtn');
+   if(b)b.textContent='Light mode';
+ }
+ setActiveNav(0);
+});
+
+</script>
+
+</body>
+</html>
