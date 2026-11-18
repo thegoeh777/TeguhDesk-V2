@@ -1,3 +1,13 @@
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+  const db = supabase.createClient('https://mnhltrqdusnuqjojppvf.supabase.co', 'sb_publishable_JKfei1fpykxes_7WUP4ORg_N3_lO2Aq');
+
+  // ambil semua tiket
+  const { data } = await db.from('tickets').select('*');
+
+  // simpan atau ubah satu tiket
+  await db.from('tickets').upsert({ id: tiket.id, data: tiket });
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
